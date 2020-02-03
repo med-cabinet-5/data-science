@@ -1,16 +1,34 @@
 import pickle
 import pandas as pd
+import spacy
+from spacy.tokenizer import Tokenizer
 from flask import Flask
+
 
 url = "https://raw.githubusercontent.com/kushyapp/cannabis-dataset/master/Dataset/Strains/strains-kushy_api.2017-11-14.csv"
 url2 = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/cannabis.csv"
 df = pd.read_csv(url)
 df2 = pd.read_csv(url2)
 
+nlp = spacy.load("en_core_web_lg")
+tokenizer = Tokenizer(nlp.vocab)
+
 def create_app():
     """Creates and configures Flask app instance"""
     app = Flask(__name__)
+    
+    def get_lemmas(text):
+        """Return the Lemmas"""
+    
+        lemmas = []
+        doc = nlp(text)
 
+        for token in doc: 
+            if ((token.is_stop == False) and (token.is_punct == False)) and (token.pos_!= 'PRON'):
+                lemmas.append(token.lemma_)
+
+        return lemmas
+    
     def cleaner(df1, df2):
         """Clean Dataframes and concat together & keep as much text information as possible"""
 
