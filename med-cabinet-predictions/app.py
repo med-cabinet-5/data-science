@@ -1,7 +1,5 @@
 import pickle
 from flask import Flask
-from decouple import config
-from .strain_db import DB, Strain
 
 url = "https://raw.githubusercontent.com/kushyapp/cannabis-dataset/master/Dataset/Strains/strains-kushy_api.2017-11-14.csv"
 url2 = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/cannabis.csv"
@@ -106,14 +104,14 @@ def create_app():
         pred_dict = {}
 
 
-            # add new dictionary to pred_dict containing predictions
-            preds_dict = {(1 + len(pred_dict)): {"strain": df["Strain"][x],
-                                                 "type": df["Type"][x],
-                                                 "description": df["Description"][x],
-                                                 "flavor": df["Flavor"][x],
-                                                 "effects": df["Effects"][x],
-                                                 "ailments": df["Ailment"][x]}}
-            pred_dict.update(preds_dict)
+        # add new dictionary to pred_dict containing predictions
+        preds_dict = {(1 + len(pred_dict)): {"strain": df["Strain"][x],
+                                             "type": df["Type"][x],
+                                             "description": df["Description"][x],
+                                             "flavor": df["Flavor"][x],
+                                             "effects": df["Effects"][x],
+                                             "ailments": df["Ailment"][x]}}
+        pred_dict.update(preds_dict)
 
         return pred, pred_dict
 
