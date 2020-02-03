@@ -2,7 +2,7 @@ import pickle
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from flask import Flask
+from flask import Flask, request
 
 
 url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/build_data.csv"
@@ -41,8 +41,12 @@ def create_app():
         return pred, pred_dict
     
 
-    @app.route('/pred/<string>', methods=['GET'])
+    @app.route('/json', methods=['GET'])
     def root():
-        return pred(string, df)
+        req_data = request.get_json()
+        our_string = req_data[USER_INPUT_STRING]
+        """Until we are on the same page with the front end"""
+        # return pred(our_string, df)
+        return {'description':'API active'}
 
     return app
