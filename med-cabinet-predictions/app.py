@@ -1,11 +1,13 @@
 import pickle
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from flask import Flask
 
 
 url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/build_data.csv"
 df = pd.read_csv(url)
+tfidf = TfidfVectorizer(tokenizer=get_lemmas, min_df=0.025, max_df=.98, ngram_range=(1,3))
 
 def create_app():
     """Creates and configures Flask app instance"""
