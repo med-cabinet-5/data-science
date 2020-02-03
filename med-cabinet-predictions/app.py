@@ -1,4 +1,5 @@
 import pickle
+import pandas as pd
 from flask import Flask
 
 url = "https://raw.githubusercontent.com/kushyapp/cannabis-dataset/master/Dataset/Strains/strains-kushy_api.2017-11-14.csv"
