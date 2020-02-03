@@ -1,6 +1,7 @@
 import pickle
 import pandas as pd
 import spacy
+from sklearn.neighbors import NearestNeighbors
 from spacy.tokenizer import Tokenizer
 from flask import Flask
 
