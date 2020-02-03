@@ -37,11 +37,10 @@ def create_app():
         pred_dict.update(preds_dict)
 
         return pred, pred_dict
-
-    clean_df = cleaner(df, df2)
+    
 
     @app.route('/pred/<string>', methods=['GET'])
     def root():
-        return pred(string, clean_df)
+        return pred(string, df)
 
     return app
