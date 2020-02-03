@@ -7,7 +7,7 @@ from flask import Flask
 
 url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/build_data.csv"
 df = pd.read_csv(url)
-tfidf = TfidfVectorizer(tokenizer=get_lemmas, min_df=0.025, max_df=.98, ngram_range=(1,3))
+tfidf = TfidfVectorizer(min_df=0.025, max_df=.98, ngram_range=(1,3))
 
 def create_app():
     """Creates and configures Flask app instance"""
