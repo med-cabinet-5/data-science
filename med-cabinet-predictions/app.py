@@ -58,7 +58,7 @@ def create_app():
             pred_dict.append(preds_list)
 
         # Load data for model 2
-        model = pickle.load(open("../stretch.sav", "rb"))
+        model = pickle.load(open("stretch.sav", "rb"))
         #Pull result out
         pred_2 = model.predict(review)[0]
 
