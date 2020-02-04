@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from flask import Flask, request
 
 
-url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/build_data.csv"
+url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/data/build_data.csv"
 df = pd.read_csv(url)
 tfidf = TfidfVectorizer(min_df=0.025, max_df=.98, ngram_range=(1,3))
 
