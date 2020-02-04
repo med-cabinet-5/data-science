@@ -1,8 +1,8 @@
 import pickle
 import pandas as pd
+import xgboost
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.neighbors import NearestNeighbors
 from flask import Flask, request, jsonify
 
 

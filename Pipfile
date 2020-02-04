@@ -16,6 +16,7 @@ spacy = "*"
 matplotlib = "*"
 seaborn = "*"
 gunicorn = "*"
+xgboost = "*"
 
 [requires]
 python_version = "3.7"
