@@ -6,6 +6,7 @@ import xgboost
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/data/canna.csv"
 # Read in data
@@ -126,7 +127,8 @@ def pred_list2(x):
 def create_app():
     """Creates and configures Flask app instance"""
     app = Flask(__name__)
-    
+    CORS(app)
+
     @app.route('/stats', methods=['GET'])
     def root():
         req_data = request.get_json()
