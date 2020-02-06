@@ -35,7 +35,7 @@ Find our Flask API [here](https://github.com/med-cabinet-5/data-science/tree/mas
 
 ```
 {
-  "USER_INPUT_STRING": "i want to feel hapy and uplifted"
+  "USER_INPUT_STRING": "i want to feel happy and uplifted"
 }
 ```
 
@@ -90,7 +90,7 @@ Find our Flask API [here](https://github.com/med-cabinet-5/data-science/tree/mas
 #### **input**: 
 ```
 {
-  "USER_INPUT_STRING": "i want to feel hapy and uplifted"
+  "USER_INPUT_STRING": "i want to feel happy and uplifted"
 }
 ```
 
