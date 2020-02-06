@@ -12,12 +12,12 @@ Use user data along with strain data to build ML models to guide recommendations
     - Pitch: App for new cannabis consumers (especially those trying to get off of pharmaceuticals) who want to use cannabis as a means to battle medical conditions and ailments. Help patients find the right strains, dosing, intake method and intake schedule! Use user data along with strain data to build ML models to guide recommendations.
 
 # Team:
-- UI: Stephen Gary
-- React1:  Kennith Howe and Danika Thomson
-- React2: KP Parrish
-- Backend: Lexie Jiang
-- Data Engineer:  Mikio Harman, Jan Jaap de Jong, David Vollendroff and Nicole Williams
-- Project Lead: Vinni Hoke
+- UI: [Stephen Gary](https://github.com/stgary)
+- React1:  [Kennith Howe](https://github.com/Draxxus702) and [Danika Thomson](https://github.com/DanikaT)
+- React2: [KP Parrish](https://github.com/KParrish193)
+- Backend: [Lexie Jiang](https://github.com/jiangeyre)
+- Data Engineer:  [Mikio Harman](https://github.com/mpHarm88), [Jan Jaap de Jong](https://github.com/Okocha76), [David Vollendroff](https://github.com/DavidVollendroff) and [Nicole Williams](https://github.com/nwilliams030)
+- Project Lead: [Vinni Hoke](https://github.com/vinnihoke)
 
 # Data
 - [Kaggle Data](https://www.kaggle.com/kingburrito666/cannabis-strains)
@@ -36,7 +36,6 @@ Find our Flask API [here](https://github.com/med-cabinet-5/data-science/tree/mas
 ```
 {
   "USER_INPUT_STRING": "i want to feel hapy and uplifted"
-
 }
 ```
 
@@ -92,7 +91,6 @@ Find our Flask API [here](https://github.com/med-cabinet-5/data-science/tree/mas
 ```
 {
   "USER_INPUT_STRING": "i want to feel hapy and uplifted"
-
 }
 ```
 
@@ -107,10 +105,12 @@ Find our Flask API [here](https://github.com/med-cabinet-5/data-science/tree/mas
 ```
 
 # Dependencies
-- [SpaCy](https://spacy.io/)
 - [Pandas](https://pandas.pydata.org/pandas-docs/stable/)
 - [XGBoost](https://xgboost.readthedocs.io/en/latest/)
 - [Scikit-Learn](https://scikit-learn.org/stable/)
+- [Flask](https://flask.palletsprojects.com/en/1.1.x/api/)
+- [Gunicorn](https://gunicorn.org/)
+- [Numpy](https://docs.scipy.org/doc/numpy/reference/)
 
 # License
 - [MIT License](https://opensource.org/licenses/MIT)
