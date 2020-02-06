@@ -56,6 +56,7 @@ def lister(x):
 def starter(x):
     
     # Turn Review into a list, transform, and predict
+    global review
     review = [x]
     new = tfidf.transform(review)
 
