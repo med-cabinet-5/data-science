@@ -13,6 +13,18 @@ df = pd.read_csv(url)
 # Fill NaN with empty strings
 df = df.fillna("")
 
+# Instantiate vectorizer object
+tfidf = TfidfVectorizer(stop_words="english", min_df=0.025, max_df=.98, ngram_range=(1, 3))
+
+# Create a vocabulary and get word counts per document
+dtm = tfidf.fit_transform(df['alltext'])
+
+# Get feature names to use as dataframe column headers
+dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
+
+# Fit on TF-IDF Vectors and return 30 neighbors
+nn = NearestNeighbors(n_neighbors=30, algorithm="kd_tree", radius=0.5)
+nn.fit(dtm)
 
 def lister(x):
     """Function to return top seen words from a desired column"""
@@ -42,19 +54,7 @@ def lister(x):
 
 
 def starter(x):
-    # Instantiate vectorizer object
-    tfidf = TfidfVectorizer(stop_words="english", min_df=0.025, max_df=.98, ngram_range=(1, 3))
-
-    # Create a vocabulary and get word counts per document
-    dtm = tfidf.fit_transform(df['alltext'])
-
-    # Get feature names to use as dataframe column headers
-    dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
-
-    # Fit on TF-IDF Vectors and return 30 neighbors
-    nn = NearestNeighbors(n_neighbors=30, algorithm="kd_tree", radius=0.5)
-    nn.fit(dtm)
-
+    
     # Turn Review into a list, transform, and predict
     review = [x]
     new = tfidf.transform(review)
