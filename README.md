@@ -20,10 +20,11 @@ Use user data along with strain data to build ML models to guide recommendations
 - Project Lead: Vinni Hoke
 
 # Data
-[Kaggle Data](https://www.kaggle.com/kingburrito666/cannabis-strains)
-[Kushy App Data](https://github.com/kushyapp/cannabis-dataset/tree/master/Dataset/Strains)
+- [Kaggle Data](https://www.kaggle.com/kingburrito666/cannabis-strains)
+- [Kushy App Data](https://github.com/kushyapp/cannabis-dataset/tree/master/Dataset/Strains)
 
 # Dependencies
+- [SpaCy](https://spacy.io/)
 - [Pandas](https://pandas.pydata.org/pandas-docs/stable/)
 - [XGBoost](https://xgboost.readthedocs.io/en/latest/)
 - [Scikit-Learn](https://scikit-learn.org/stable/)
