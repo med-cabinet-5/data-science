@@ -1,3 +1,4 @@
+from collections import Counter
 import pickle
 import pandas as pd
 import xgboost
@@ -5,88 +6,135 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 from flask import Flask, request, jsonify
 
-
-url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/data/build_data.csv"
+url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/data/canna.csv"
+# Read in data
 df = pd.read_csv(url)
-tfidf = TfidfVectorizer(min_df=0.025, max_df=.98, ngram_range=(1,3))
+# Fill NaN with empty strings
+df = df.fillna("")
 
-def create_app():
-    """Creates and configures Flask app instance"""
-    app = Flask(__name__)
+def lister(x):
+    """Function to return top seen words from a desired column"""
+    # make new df from preds
+    df_preds = df.loc[pred]
+    # make empty list
+    word_ls = []
+
+    # loop over items in desired column and append into a list and title it
+    for x in df_preds[x]:
+        x = x.split(" ")
+        for x in x:
+            word_ls.append(x.strip(",").title())
+
+    # Count the number of times each element appears
+    count = Counter(word_ls)
     
-    def pred_list(x):
-        """
-        x = string to predict from (description)
-        1. Predict the nearest neighbors to the inputted description
-        2. Predict what type of cannabis the user is looking for with probability
+    # Create new empty list
+    word_ls = []
 
-        """
-        # Read in data
-        df = pd.read_csv("https://raw.githubusercontent.com/med-cabinet-5/data-science/master/data/canna.csv")
-        # Fill NaN with empty strings
-        df = df.fillna("")
+    # Loop over first 3 most common elements and join together in a string
+    for x in range(3):
+        word_ls.append(count.most_common(3)[x][0])
+    result = ", ".join(word_ls)
 
-        # Instantiate vectorizer object
-        tfidf = TfidfVectorizer(stop_words="english", min_df=0.025, max_df=.98, ngram_range=(1,3))
+    return result
 
-        # Create a vocabulary and get word counts per document
-        dtm = tfidf.fit_transform(df['alltext'])
+def starter(x):
 
-        # Get feature names to use as dataframe column headers
-        dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
+    # Instantiate vectorizer object
+    tfidf = TfidfVectorizer(stop_words="english", min_df=0.025, max_df=.98, ngram_range=(1,3))
 
-        # Fit on TF-IDF Vectors
-        nn = NearestNeighbors(n_neighbors=5, algorithm="kd_tree", radius=0.5)
-        nn.fit(dtm)
+    # Create a vocabulary and get word counts per document
+    dtm = tfidf.fit_transform(df['alltext'])
 
-        # Turn Review into a list, transform, and predict
-        review = [x]
-        new = tfidf.transform(review)
-        pred = nn.kneighbors(new.todense())[1][0]
+    # Get feature names to use as dataframe column headers
+    dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
+    
+    # Fit on TF-IDF Vectors and return 30 neighbors
+    nn = NearestNeighbors(n_neighbors=30, algorithm="kd_tree", radius=0.5)
+    nn.fit(dtm)
+    
+    # Turn Review into a list, transform, and predict
+    global review
+    review = [x]
+    new = tfidf.transform(review)
+    
+    global pred
+    pred = nn.kneighbors(new.todense())[1][0]
+
+    return
+
+def pred_list(x):
+    """
+    x = string to predict from (description)
+    1. Predict the nearest neighbors to the inputted description
+    2. Predict what type of cannabis the user is looking for with probability
+
+    """
+    starter(x)
+
+    #create empty list
+    pred_dict = []
+
+    # only loop through 5 closest neighbors
+    for x in pred[:5]:
+        # add new dictionary to pred_dict containing predictions
+        preds_list ={"strain":df["Strain"][x],
+                     "type": df["Type_raw"][x],
+                     "description": df["Description_raw"][x],
+                     "flavor": df["Flavor_raw"][x],
+                     "effects": df["Effects_raw"][x],
+                     "ailments": df["Ailment_raw"][x]}
+        pred_dict.append(preds_list)
+
+    return pred_dict
+
+def pred_list2(x):
+
+    starter(x)
+
+    # Create initial dictionary with tops from relevant columns
+    test_dict = {"top_effects": lister("Effects_raw"),
+                 "top_flavors": lister("Flavor_raw"),
+                 "top_ailments": lister("Ailment_raw")
+                }
 
 
-        #create empty list
-        pred_dict = []
-        for x in pred:
-            # add new dictionary to pred_dict containing predictions
-            preds_list ={"strain":df["Strain"][x],
-                         "type": df["Type_raw"][x],
-                         "description": df["Description_raw"][x],
-                         "flavor": df["Flavor_raw"][x],
-                         "effects": df["Effects_raw"][x],
-                         "ailments": df["Ailment_raw"][x]}
-            pred_dict.append(preds_list)
+    model = pickle.load(open("stretch.sav", "rb"))
+    #Pull result out
+    pred_2 = model.predict(review)[0]
 
-        # Load data for model 2
-        model = pickle.load(open("stretch.sav", "rb"))
-        #Pull result out
-        pred_2 = model.predict(review)[0]
+    #Grab max predict proba
+    predict_proba = model.predict_proba(review)[0].max() * 100
 
-        #Grab max predict proba                   
-        predict_proba = model.predict_proba(review)[0].max() * 100
-
-        # Mapper to change result into string
-        mapper = ({5: "Hybrid",
+    # Mapper to change result into string
+    mapper = ({5: "Hybrid",
                4: "Indica",
                3: "Sativa",
                2: "Hybrid, Indica",
                1: "Sativa, Hybrid"})
 
-        # Apply mapper to newly made Series
-        strain_type = pd.Series(pred_2).map(mapper)[0]
+    # Apply mapper to newly made Series
+    strain_type = pd.Series(pred_2).map(mapper)[0]
 
-        # Create new dictionary element
-        new_dict = {"proba":f"There is a {round(predict_proba, 2)}% that your looking for a {strain_type}"}
+    # Add new entry
+    test_dict["proba"] = f"There is a {round(predict_proba, 2)}% that your looking for a {strain_type}"
 
-        # Add new dicitonary to list of dictionaries
-        pred_dict.append(new_dict)
+    return test_dict
 
-        return pred_dict
+
+def create_app():
+    """Creates and configures Flask app instance"""
+    app = Flask(__name__)
     
-    
-
-    @app.route('/json', methods=['GET'])
+    @app.route('/stats', methods=['GET'])
     def root():
+        req_data = request.get_json()
+        our_string = req_data["USER_INPUT_STRING"]
+        output = pred_list2(our_string)
+        return output
+    
+    @app.route('/json', methods=['GET'])
+    def root2():
         req_data = request.get_json()
         our_string = req_data['USER_INPUT_STRING']
         """Until we are on the same page with the front end"""
