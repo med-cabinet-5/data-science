@@ -32,8 +32,22 @@ Use user data along with strain data to build ML models to guide recommendations
 # License
 - [MIT License](https://opensource.org/licenses/MIT)
 
-# Sample Data Visualization
+# Word Embedding Visuals (Transfer learning with SpaCy)
+
+### Cannabis Flavor Word Embeddings 
 <div align="center">
   <img src="https://github.com/med-cabinet-5/data-science/blob/master/img/flavor.png"><br>
 </div>
+
+### Cannabis Effects Word Embeddings 
+<div align="center">
+  <img src="https://github.com/med-cabinet-5/data-science/blob/master/img/effects.png"><br>
+</div>
+
+### Cannabis Ailments Word Embeddings 
+<div align="center">
+  <img src="https://github.com/med-cabinet-5/data-science/blob/master/img/ailment.png"><br>
+</div>
+
+
 
