@@ -7,6 +7,7 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 from flask import Flask, request, jsonify
 
+
 url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/data/canna.csv"
 # Read in data
 df = pd.read_csv(url)
@@ -26,6 +27,17 @@ dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
 nn = NearestNeighbors(n_neighbors=30, algorithm="kd_tree", radius=0.5)
 nn.fit(dtm)
 
+
+def starter(x):
+    # Turn Review into a list, transform, and predict
+    global review
+    review = [x]
+    new = tfidf.transform(review)
+
+    global pred
+    pred = nn.kneighbors(new.todense())[1][0]
+
+    return
 
 def lister(x):
     """Function to return top seen words from a desired column"""
@@ -53,19 +65,6 @@ def lister(x):
 
     return result
 
-
-def starter(x):    
-    # Turn Review into a list, transform, and predict
-    global review
-    review = [x]
-    new = tfidf.transform(review)
-    
-    global pred
-    pred = nn.kneighbors(new.todense())[1][0]
-
-    return
-
-
 def pred_list(x):
     """
     x = string to predict from (description)
@@ -75,13 +74,13 @@ def pred_list(x):
     """
     starter(x)
 
-    #create empty list
+    # create empty list
     pred_dict = []
 
     # only loop through 5 closest neighbors
     for x in pred[:5]:
         # add new dictionary to pred_dict containing predictions
-        preds_list ={"strain":df["Strain"][x],
+        preds_list = {"strain": df["Strain"][x],
                      "type": df["Type_raw"][x],
                      "description": df["Description_raw"][x],
                      "flavor": df["Flavor_raw"][x],
@@ -144,6 +143,10 @@ def create_app():
         """Until we are on the same page with the front end"""
         output = pred_list(our_string)
         return jsonify(output)
+
+    @app.route("/")
+    def root3():
+        return """Med Cabinet 5 By  David Vollendroff, Jan Jaap de Jong, Nicole Williams, & Mikio Harman"""
 
     return app
 
