@@ -7,37 +7,12 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 from flask import Flask, request, jsonify
 
-
 url = "https://raw.githubusercontent.com/med-cabinet-5/data-science/master/data/canna.csv"
 # Read in data
 df = pd.read_csv(url)
 # Fill NaN with empty strings
 df = df.fillna("")
 
-# Instantiate vectorizer object
-tfidf = TfidfVectorizer(stop_words="english", min_df=0.025, max_df=.98, ngram_range=(1,3))
-
-# Create a vocabulary and get word counts per document
-dtm = tfidf.fit_transform(df['alltext'])
-
-# Get feature names to use as dataframe column headers
-dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
-
-# Fit on TF-IDF Vectors and return 30 neighbors
-nn = NearestNeighbors(n_neighbors=30, algorithm="kd_tree", radius=0.5)
-nn.fit(dtm)
-
-
-def starter(x):
-    # Turn Review into a list, transform, and predict
-    global review
-    review = [x]
-    new = tfidf.transform(review)
-
-    global pred
-    pred = nn.kneighbors(new.todense())[1][0]
-
-    return
 
 def lister(x):
     """Function to return top seen words from a desired column"""
@@ -54,7 +29,7 @@ def lister(x):
 
     # Count the number of times each element appears
     count = Counter(word_ls)
-    
+
     # Create new empty list
     word_ls = []
 
@@ -64,6 +39,31 @@ def lister(x):
     result = ", ".join(word_ls)
 
     return result
+
+
+def starter(x):
+    # Instantiate vectorizer object
+    tfidf = TfidfVectorizer(stop_words="english", min_df=0.025, max_df=.98, ngram_range=(1, 3))
+
+    # Create a vocabulary and get word counts per document
+    dtm = tfidf.fit_transform(df['alltext'])
+
+    # Get feature names to use as dataframe column headers
+    dtm = pd.DataFrame(dtm.todense(), columns=tfidf.get_feature_names())
+
+    # Fit on TF-IDF Vectors and return 30 neighbors
+    nn = NearestNeighbors(n_neighbors=30, algorithm="kd_tree", radius=0.5)
+    nn.fit(dtm)
+
+    # Turn Review into a list, transform, and predict
+    review = [x]
+    new = tfidf.transform(review)
+
+    global pred
+    pred = nn.kneighbors(new.todense())[1][0]
+
+    return
+
 
 def pred_list(x):
     """
@@ -81,32 +81,30 @@ def pred_list(x):
     for x in pred[:5]:
         # add new dictionary to pred_dict containing predictions
         preds_list = {"strain": df["Strain"][x],
-                     "type": df["Type_raw"][x],
-                     "description": df["Description_raw"][x],
-                     "flavor": df["Flavor_raw"][x],
-                     "effects": df["Effects_raw"][x],
-                     "ailments": df["Ailment_raw"][x]}
+                      "type": df["Type_raw"][x],
+                      "description": df["Description_raw"][x],
+                      "flavor": df["Flavor_raw"][x],
+                      "effects": df["Effects_raw"][x],
+                      "ailments": df["Ailment_raw"][x]}
         pred_dict.append(preds_list)
 
     return pred_dict
 
 
 def pred_list2(x):
-
     starter(x)
 
     # Create initial dictionary with tops from relevant columns
     test_dict = {"top_effects": lister("Effects_raw"),
                  "top_flavors": lister("Flavor_raw"),
                  "top_ailments": lister("Ailment_raw")
-                }
-
+                 }
 
     model = pickle.load(open("stretch.sav", "rb"))
-    #Pull result out
+    # Pull result out
     pred_2 = model.predict(review)[0]
 
-    #Grab max predict proba
+    # Grab max predict proba
     predict_proba = model.predict_proba(review)[0].max() * 100
 
     # Mapper to change result into string
@@ -124,7 +122,6 @@ def pred_list2(x):
 
     return test_dict
 
-
 def create_app():
     """Creates and configures Flask app instance"""
     app = Flask(__name__)
@@ -140,7 +137,6 @@ def create_app():
     def root2():
         req_data = request.get_json()
         our_string = req_data['USER_INPUT_STRING']
-        """Until we are on the same page with the front end"""
         output = pred_list(our_string)
         return jsonify(output)
 
