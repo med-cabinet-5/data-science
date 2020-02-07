@@ -129,17 +129,15 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    @app.route('/stats', methods=['POST'])
+    @app.route('/stats', methods=['POST', 'GET'])
     def root():
-        req_data = request.get_json()
-        # our_string = req_data["USER_INPUT_STRING"]
-        output = pred_list2(req_data) # our_string
+        req_data = request.get_json(force=True)
+        output = pred_list2(req_data)
         return output
     
-    @app.route('/json', methods=['POST'])
+    @app.route('/json', methods=['POST', 'GET'])
     def root2():
-        req_data = request.get_json()
-        # our_string = req_data['USER_INPUT_STRING']
+        req_data = request.get_json(force=True)
         output = pred_list(req_data)
         return jsonify(output)
 
