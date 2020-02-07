@@ -129,14 +129,14 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    @app.route('/stats', methods=['GET'])
+    @app.route('/stats', methods=['POST'])
     def root():
         req_data = request.get_json()
         our_string = req_data["USER_INPUT_STRING"]
         output = pred_list2(our_string)
         return output
     
-    @app.route('/json', methods=['GET'])
+    @app.route('/json', methods=['POST'])
     def root2():
         req_data = request.get_json()
         our_string = req_data['USER_INPUT_STRING']
