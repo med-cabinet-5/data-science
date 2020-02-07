@@ -139,8 +139,8 @@ def create_app():
     @app.route('/json', methods=['POST'])
     def root2():
         req_data = request.get_json()
-        our_string = req_data['USER_INPUT_STRING']
-        output = pred_list(our_string)
+        # our_string = req_data['USER_INPUT_STRING']
+        output = pred_list(req_data)
         return jsonify(output)
 
     @app.route("/")
